@@ -638,6 +638,7 @@ void Object3d::CreateModel()
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	/*ibView.SizeInBytes = sizeof(indices);*/
 	ibView.SizeInBytes = sizeIB;
+
 }
 
 void Object3d::UpdateViewMatrix()
