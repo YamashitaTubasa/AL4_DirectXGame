@@ -412,7 +412,7 @@ void Object3d::CreateModel()
 	}
 	vector<XMFLOAT3>positions; // 頂点座標
 	vector<XMFLOAT3>normals;   // 法線ベクトル
-	vector<XMFLOAT2>tecoords;  // テクスチャUV
+	vector<XMFLOAT2>texcoords;  // テクスチャUV
 	// １行ずつ読み込む
 	string line;
 	while(getline(file, line)) {
