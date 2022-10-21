@@ -439,7 +439,6 @@ void Object3d::CreateModel()
 			vertices.emplace_back(vertex);*/
 		}
 	
-
 		// 先頭文字列がｆならポリゴン（三角形）
 		if (key == "f") {
 			// 半角スペース区切りで行の続きを読み込む
