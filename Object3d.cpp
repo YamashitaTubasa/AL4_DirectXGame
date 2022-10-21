@@ -452,6 +452,7 @@ void Object3d::CreateModel()
 				indices.emplace_back(indexPosition - 1);
 			}
 		}
+
 	}
 	// ファイルと閉じる
 	file.close();
