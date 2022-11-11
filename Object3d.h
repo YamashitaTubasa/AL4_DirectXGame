@@ -53,7 +53,7 @@ public: // サブクラス
 		std::string name; // マテリアル名
 		XMFLOAT3 ambient; // アンビエント影響度
 		XMFLOAT3 diffuse; // ディフェーズ影響度
-		XMFLOAT3 specular; // スペキュラー影響度
+		XMFLOAT3 specular;// スペキュラー影響度
 		float alpha;      // アルファ
 		std::string textureFilename; // テクスチャファイル名
 		// コンストラクタ
@@ -240,8 +240,8 @@ public: // メンバ関数
 
 private: // メンバ変数
 	//ComPtr<ID3D12Resource> constBuff; // 定数バッファ
-	ComPtr<ID3D12Resource>constBuffB0; // 定数バッファ
-	ComPtr<ID3D12Resource>constBuffB1; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール

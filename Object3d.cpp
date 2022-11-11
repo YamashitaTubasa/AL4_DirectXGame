@@ -346,12 +346,15 @@ void Object3d::LoadTexture(const std::string& directoryPath, const std::string& 
 	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
 
 	// WICテクスチャのロード
-	/*result = LoadFromWICFile( L"Resources/tex1.png", WIC_FLAGS_NONE, &metadata, scratchImg);
-	assert(SUCCEEDED(result));*/
+	/*result = LoadFromWICFile( 
+	L"Resources/tex1.png", 
+	WIC_FLAGS_NONE, &metadata, scratchImg);*/
+
 	result = LoadFromWICFile(
 		wfilepath, WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
+	assert(SUCCEEDED(result));
 
 	ScratchImage mipChain{};
 	// ミップマップ生成
@@ -430,9 +433,9 @@ void Object3d::CreateModel()
 	if (file.fail()) {
 		assert(0);
 	}
-	vector<XMFLOAT3>positions; // 頂点座標
-	vector<XMFLOAT3>normals;   // 法線ベクトル
-	vector<XMFLOAT2>texcoords;  // テクスチャUV
+	vector<XMFLOAT3> positions; // 頂点座標
+	vector<XMFLOAT3> normals;   // 法線ベクトル
+	vector<XMFLOAT2> texcoords; // テクスチャUV
 	// １行ずつ読み込む
 	string line;
 	while(getline(file, line)) {
@@ -732,7 +735,7 @@ void Object3d::LoadMaterial(const std::string& directoryPath, const std::string&
 		getline(line_stream, key, ' ');
 
 		// 先頭のタブ文字は無視する
-		if (key[0] == '/t')
+		if (key[0] == '\t')
 		{
 			key.erase(key.begin()); // 先頭の文字を削除
 		}
@@ -747,7 +750,7 @@ void Object3d::LoadMaterial(const std::string& directoryPath, const std::string&
 		{
 			line_stream >> material.ambient.x;
 			line_stream >> material.ambient.y;
-			line_stream >> material.ambient.x;
+			line_stream >> material.ambient.z;
 		}
 		// 先頭文字列がKdならディフューズ色
 		if (key == "Kd")
@@ -791,11 +794,17 @@ bool Object3d::Initialize()
 	// 定数バッファの生成
 	result = device->CreateCommittedResource(
 		&heapProps, // アップロード可能
-		D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		D3D12_HEAP_FLAG_NONE, 
+		&resourceDesc, 
+		D3D12_RESOURCE_STATE_GENERIC_READ, 
+		nullptr,
 		IID_PPV_ARGS(&constBuffB0));
 	assert(SUCCEEDED(result));
 
-	resourceDesc = CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff);
+	resourceDesc = 
+
+	CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff);
+	
 	// 定数バッファの生成
 	result = device->CreateCommittedResource(
 		&heapProps,
