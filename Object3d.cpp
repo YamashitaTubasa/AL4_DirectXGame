@@ -103,7 +103,7 @@ Object3d * Object3d::Create()
 	}
 
 	// スケールをセット
-	float scale_val = 20;
+	float scale_val = 10;
 	object3d->scale = { scale_val,scale_val,scale_val };
 
 	return object3d;
@@ -425,7 +425,7 @@ void Object3d::CreateModel()
 	std::ifstream file;
 	// .objファイルを開く
 	//file.open("Resources/triangle_tex/triangle_tex.obj");
-	const string modelname = "triangle_mat";
+	const string modelname = "cube";
 	const string filename = modelname + ".obj"; // "triangle_mat.obj"
 	const string directoryPath = "Resources/" + modelname + "/"; // "Resources/triangle_mat/"
 	file.open(directoryPath + filename); // "Resources/triangle_mat/triangle_mat.obj"
@@ -482,7 +482,8 @@ void Object3d::CreateModel()
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				// 頂点インデックスに追加
-				indices.emplace_back(indexPosition - 1);
+				//indices.emplace_back(indexPosition - 1);
+				indices.emplace_back((unsigned short)indices.size());
 			}
 		}
 
