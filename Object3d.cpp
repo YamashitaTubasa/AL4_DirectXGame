@@ -866,6 +866,8 @@ void Object3d::Draw()
 	assert(device);
 	assert(Object3d::cmdList);
 		
+	model->Draw();
+
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファの設定
@@ -887,4 +889,5 @@ void Object3d::Draw()
 	// 描画コマンド
 	/*cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);*/
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+
 }

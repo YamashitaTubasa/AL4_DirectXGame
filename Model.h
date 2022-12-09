@@ -109,4 +109,10 @@ private:// Ã“Iƒƒ“ƒoŠÖ”
 	/// </summary>
 	/// <returns>¬”Û</returns>
 	static void LoadMaterial(const std::string& directoryPath, const std::string& filename);
+
+public:
+	// ‰Šú‰»
+	bool Initialize();
+	// •`‰æ
+	void Draw();
 };

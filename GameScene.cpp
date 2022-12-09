@@ -3,6 +3,12 @@
 
 using namespace DirectX;
 
+template<class T>
+void safe_delete(T*& p) {
+	delete p;
+	p = nullptr;
+}
+
 GameScene::GameScene()
 {
 }
@@ -10,7 +16,11 @@ GameScene::GameScene()
 GameScene::~GameScene()
 {
 	delete spriteBG;
-	delete object3d;
+	// 3Eオブジェクトの解放
+	safe_delete(objFighter1);
+	safe_delete(objFighter2);
+	// モデルデータの解放
+	safe_delete(modelFighter);
 }
 
 void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
@@ -35,10 +45,23 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// 3Dオブジェクト生成
 	object3d = Object3d::Create();
 	object3d->Update();
+
+	// .objの名前を指定してモデルを読み込む
+	modelFighter = Model::CreateFromOBJ("Fighter");
+	// 3Dオブジェクトの生成
+	objFighter1 = Object3d::Create();
+	objFighter2 = Object3d::Create();
+	// 3Dオブジェクトにモデルを割り当てる
+	objFighter1->SetModel(modelFighter);
+	objFighter2->SetModel(modelFighter);
 }
 
 void GameScene::Update()
 {
+	// 3Dオブジェクトの更新
+	objFighter1->Update();
+	objFighter2->Update();
+
 	// オブジェクト移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
@@ -64,7 +87,6 @@ void GameScene::Update()
 		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ -1.0f,0.0f,0.0f }); }
 	}
 
-	object3d->Update();
 }
 
 void GameScene::Draw()
@@ -93,7 +115,8 @@ void GameScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	object3d->Draw();
+	objFighter1->Draw();
+	objFighter2->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

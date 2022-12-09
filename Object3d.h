@@ -6,6 +6,8 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 
+#include "Model.h"
+
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
@@ -254,5 +256,7 @@ private: // メンバ変数
 	XMMATRIX matWorld;
 	// 親オブジェクト
 	Object3d* parent = nullptr;
+	// Model
+	Model* model = nullptr;
 };
 

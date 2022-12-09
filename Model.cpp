@@ -657,7 +657,7 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 	file.close();
 }
 
-bool Object3d::Initialize()
+bool Model::Initialize()
 {
 	// nullptrチェック
 	assert(device);

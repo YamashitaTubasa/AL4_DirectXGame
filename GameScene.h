@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "Object3d.h"
 #include "DebugText.h"
+#include "Model.h"
 
 /// <summary>
 /// ゲームシーン
@@ -51,6 +52,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
@@ -61,5 +64,8 @@ private: // メンバ変数
 	/// </summary>
 	Sprite* spriteBG = nullptr;
 	Object3d* object3d = nullptr;
+	Model* modelFighter = nullptr;
+	Object3d* objFighter1 = nullptr;
+	Object3d* objFighter2 = nullptr;
 };
 
