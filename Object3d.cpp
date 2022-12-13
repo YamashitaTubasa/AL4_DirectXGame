@@ -482,7 +482,8 @@ void Object3d::CreateModel()
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				// 頂点インデックスに追加
-				indices.emplace_back(indexPosition - 1);
+				//indices.emplace_back(indexPosition - 1);
+				indices.emplace_back((unsigned short)indices.size());
 			}
 		}
 
