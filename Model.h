@@ -1,16 +1,18 @@
 #pragma once
 
-#include <DirectXMath.h>
+#include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
+#include <DirectXMath.h>
 #include <d3dx12.h>
-#include <windows.h>
+#include <string>
 
-class Model
+
+class Model 
 {
-private:
-	// Microsoft::WRLを省略
-	template <class T> using ComPtr = Microsoft::WRL::ComPtr <T>;
+private: // エイリアス
+	// Microsoft::WRL::を省略
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
@@ -24,6 +26,24 @@ public: // サブクラス
 		XMFLOAT3 pos; // xyz座標
 		XMFLOAT3 normal; // 法線ベクトル
 		XMFLOAT2 uv;  // uv座標
+	};
+
+	// 定数バッファ用データ構造体B0
+	struct ConstBufferDataB0
+	{
+		//XMFLOAT4 color;	// 色 (RGBA)
+		XMMATRIX mat;	// ３Ｄ変換行列
+	};
+
+	// 定数バッファ用データ構造体B1
+	struct ConstBufferDataB1
+	{
+		XMFLOAT3 ambient; // アンビエント係数
+		float pad1;       // パディング
+		XMFLOAT3 diffuse; // ディフューズ係数
+		float pad2;       // パディング
+		XMFLOAT3 specular; // スペキュラー係数
+		float alpha;       // アルファ
 	};
 
 	// マテリアル
@@ -44,75 +64,72 @@ public: // サブクラス
 		}
 	};
 
+private: // 定数
+	static const int division = 50; // 分割数
+	static const float radius; // 底面の半径
+	static const float prizmHeight; // 柱の高さ
+	static const int planeCount = division * 2 + division * 2; // 面の数
+	static const int vertexCount = planeCount * 3; // 頂点数
+
+public: // 静的メンバ関数
+	
+	// OBJファイルから3Dモデルを読み込む
+	static Model* LoadFromOBJ(const std::string& modelname, const std::string& texname = "Resources");
+
+	// マテリアル読み込み
+	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
+
+	// テクスチャ読み込み
+	void LoadTexture(const std::string& directoryPath, const std::string& filename);
+	void LoadTexture(const std::string& filename = "Resources");
+
+	// 描画
+	/// <param name="cmdList">描画コマンドリスト</param>
+	/// <param name="rootParamIndexMaterial">マテリアル用ルートパラメータ番号</param>
+	void Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial);
+
+	// setter
+	static void SetDevice(ID3D12Device* device) { Model::device = device; }
+
+
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
-	// パイプラインステイト
-	ComPtr<ID3D12PipelineState> pipelinestate;
-	// デスクリプタサイズ
-	UINT descriptorHandleIncrementSize;
-	// デスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> descHeap;
-	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
-	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView;
-	// インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
-	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView;
 	// 頂点データ配列
-	//static VertexPosNormalUv vertices[vertexCount];
 	std::vector<VertexPosNormalUv> vertices;
 	// 頂点インデックス配列
-	//static unsigned short indices[planeCount * 3];
 	std::vector<unsigned short> indices;
 	// マテリアル
 	Material material;
+	// テクスチャバッファ
+	ComPtr<ID3D12Resource> texbuff;
+	// デスクリプタヒープ
+	ComPtr<ID3D12DescriptorHeap> descHeap;
+	// シェーダリソースビューのハンドル(CPU)
+	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
+	// シェーダリソースビューのハンドル(CPU)
+	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
+	// デスクリプタサイズ
+	UINT descriptorHandleIncrementSize;
+	// 頂点バッファ
+	ComPtr<ID3D12Resource> vertBuff;
+	// インデックスバッファ
+	ComPtr<ID3D12Resource> indexBuff;
+	// 頂点バッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vbView;
+	// インデックスバッファビュー
+	D3D12_INDEX_BUFFER_VIEW ibView;
+	// 定数バッファ（マテリアル）
+	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 
 private:// 静的メンバ関数
-	/// <summary>
-	/// デスクリプタヒープの初期化
-	/// </summary>
-	static void InitializeDescriptorHeap();
+	// OBJファイルから3Dモデルを読み込む(非公開)
+	void LoadFromOBJInternal(const std::string& modelname);
 
-	/// <summary>
-	/// カメラ初期化
-	/// </summary>
-	/// <param name="window_width">画面横幅</param>
-	/// <param name="window_height">画面縦幅</param>
-	static void InitializeCamera(int window_width, int window_height);
+	// デスクリプタヒープの初期化
+	void InitializeDescriptorHeap();
 
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	/// <returns>成否</returns>
-	static void InitializeGraphicsPipeline();
+	// 各種バッファ生成
+	void CreateBuffers();
 
-	/// <summary>
-	/// テクスチャ読み込み
-	/// </summary>
-	static void LoadTexture(const std::string& directoryPath, const std::string& filename);
-
-	/// <summary>
-	/// モデル作成
-	/// </summary>
-	static void CreateModel();
-
-	/// <summary>
-	/// ビュー行列を更新
-	/// </summary>
-	static void UpdateViewMatrix();
-
-	/// <summary>
-	/// マテリアル読み込み
-	/// </summary>
-	/// <returns>成否</returns>
-	static void LoadMaterial(const std::string& directoryPath, const std::string& filename);
-
-public:
-	// 初期化
-	bool Initialize();
-	// 描画
-	void Draw();
 };

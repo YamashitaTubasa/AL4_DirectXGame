@@ -47,7 +47,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	object3d->Update();
 
 	// .objの名前を指定してモデルを読み込む
-	modelFighter = Model::CreateFromOBJ("Fighter");
+	modelFighter = Model::LoadFromOBJ("triangle_mat");
 	// 3Dオブジェクトの生成
 	objFighter1 = Object3d::Create();
 	objFighter2 = Object3d::Create();
