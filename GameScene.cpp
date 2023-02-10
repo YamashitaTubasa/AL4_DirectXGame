@@ -53,7 +53,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	sphere.radius = 1.0f; // 半径
 
 	// 平面の初期値を設定
-	plane.normal = XMVectorSet(0, 0.51f, 0, 0); // 法線ベクトル
+	plane.normal = XMVectorSet(0, 0.5f, 0, 0); // 法線ベクトル
 	plane.distance = 0.0f; // 原点(0,0,0)からの距離
 
 	// 3Dオブジェクト生成
@@ -77,7 +77,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	objGround->SetModel(modelGround);
 	objSkydome->SetModel(modelSkydome);
 
-	objSphere->SetPosition(XMFLOAT3(0, 5, 100));
+	objSphere->SetPosition(XMFLOAT3(0, 0, 100));
 	objGround->SetPosition(XMFLOAT3(0, -20, 0));
 	objSkydome->SetPosition({ 0,-20,0 });
 	objSkydome->SetScale({ 5,5,5 });
@@ -131,10 +131,11 @@ void GameScene::Update()
 		else if (input->PushKey(DIK_LEFT)) { sphere.center -= moveX; position.x -= 1.0f;}
 
 		// 移動後の座標を計算
-		/*if (moveTimer >= 0 && moveTimer <= 50) { position.y += 1.0f; }
-		if (moveTimer >= 51 && moveTimer <= 140) { position.y -= 1.0f; }*/
-		/*if (position.y <= 20) { position.y += 1.0f; }
-		if (moveTimer >= 51 && moveTimer <= 140) { position.y -= 1.0f; }*/
+		if (isMove == false) { sphere.center += moveY; position.y += 1.0f;
+			if (position.y >= 40) { isMove = true; }
+		}else{ sphere.center -= moveY; position.y -= 1.0f;
+			if (position.y <= -20) { isMove = false; }
+		} 
 
 		// 座標の変更を反映
 		objSphere->SetPosition(position);
@@ -152,7 +153,7 @@ void GameScene::Update()
 	// 球と平面の当たり判定
 	bool hit = Collision::CheckSphere2Plane(sphere, plane);
 	if (hit) {
-		hitColor = true;
+		isHitColor = true;
 		debugText.Print("HIT", 50, 200, 1.0f);
 		// stringstreamをリセットし、交点座標を埋め込む
 		spherestr.str("");
@@ -166,8 +167,8 @@ void GameScene::Update()
 		debugText.Print(spherestr.str(), 50, 220, 1.0f);
 	}
 	
-	if (hit != true) { hitColor = false; }
-	if (hitColor == true) { modelSphere->SetColor(XMFLOAT3(1, 0, 0)); }
+	if (hit != true) { isHitColor = false; }
+	if (isHitColor == true) { modelSphere->SetColor(XMFLOAT3(1, 0, 0)); }
 	else { modelSphere->SetColor(XMFLOAT3(1, 1, 1)); }
 
 }

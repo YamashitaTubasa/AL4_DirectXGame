@@ -84,7 +84,9 @@ private: // メンバ変数
 	// 当たり判定 平面
 	Plane plane;
 
-	bool hitColor = false; // 当たったときのカラーフラグ
+	bool isHitColor = false; // 当たったときのカラーフラグ
+	bool isMove = false; // 移動フラグ
+
 	float moveTimer = 0; // 移動時間
 };
 
