@@ -169,6 +169,7 @@ void GameScene::Update()
 	if (hit != true) { hitColor = false; }
 	if (hitColor == true) { modelSphere->SetColor(XMFLOAT3(1, 0, 0)); }
 	else { modelSphere->SetColor(XMFLOAT3(1, 1, 1)); }
+
 }
 
 void GameScene::Draw()
