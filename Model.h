@@ -90,6 +90,7 @@ public: // 静的メンバ関数
 
 	// setter
 	static void SetDevice(ID3D12Device* device) { Model::device = device; }
+	void SetColor(XMFLOAT3 color);
 
 
 private: // 静的メンバ変数
